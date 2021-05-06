@@ -64,7 +64,7 @@ app.use(express.static("./public"));
 
 app.get("/", async function(req, res, next) {
     if (!req.isAuthenticated()) return res.render("login", { req, url: process.env.PTERO_URL });
-    res.redirect("/dasboard")
+    res.redirect("/dashboard")
 });
 
 app.post("/login", passport.authenticate('local', { failWithError: true }), function(req, res) {
