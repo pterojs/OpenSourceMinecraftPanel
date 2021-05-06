@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMP</title>
+    <%- include('../extensions/head') %>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div class="navbar-brand">Open Source Minecraft Panel - <%= server.name %></div>
+            </div>
+        </nav>
+    </header>
+    <br><br><br><br><br><br>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4><kbd>server.properties</kbd> Editor</h4>
+            </div>
+            <div class="card-body">
+                <% properties=properties.split("\n").filter(l => !l.startsWith("#")).filter(l => l != "").map(p => p.split("=")); %>
+                <table class="table">
+                    <thead class="fw-bold">
+                        <td>Name</td>
+                        <td>Value</td>
+                    </thead>
+                    <tbody>
+                        <% for (let [name, value] of properties) { %>
+                        <tr>
+                            <td><%= name %></td>
+                            <td><input type="text" class="form-control field" name="<%=name%>" value="<%=value%>"></td>
+                        </tr>
+                        <% } %>                
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Submit" class="btn btn-primary"> <button onclick="window.history.back()" class="btn btn-danger">Back</button>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br><br><br><br>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"></script>
+</body>
+</html>

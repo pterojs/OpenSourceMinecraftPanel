@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMP</title>
+    <%- include('./extensions/head') %>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div class="navbar-brand">Open Source Minecraft Panel</div>
+            </div>
+        </nav>
+    </header>
+    <br><br><br><br><br><br>
+    <div class="container">
+        <table class="table">
+            <thead class="fw-bold">
+                <td>Server Name</td>
+                <td>Version</td>
+            </thead>
+            <tbody>
+                <% for ( let server of servers ) { %>
+                <tr>
+                    <td><a href="/servers/<%= server.identifier.split("-")[0] %>"><%= server.name %></a></td>
+                    <td><%= server.container.environment["MINECRAFT_VERSION"] || "N/A" %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"></script>
+</body>
+</html>
