@@ -1,4 +1,4 @@
-# Open Source Minecraft Panel
+# Open Source Minecraft Panel (grayshift edition)
 *Better known as "OSMP".*
 
 OSMP can run alongside Pterodactyl, or even far away from Pterodactyl. As long as Pterodactyl's API is visible to the public, you can run OSMP.
@@ -25,4 +25,4 @@ To run OSMP, execute `node .`, `npm test`, or if you use PM2 (recommended) - `pm
 *No questions were asked yet...*
 
 ### Some Fun Facts.
-* OSMP runs on EJS & Materalized Bootstrap v5. `/public/css/global.css` allows for the user to edit CSS and let it be applied everywhere. You can add your own `!important` flags, fonts and other stuff in that file. Uncomment a few lines and you have a somewhat working dark mode.
+* OSMP runs on EJS & Grayshift UI. `/public/css/global.css` allows for the user to edit CSS and let it be applied everywhere. You can add your own `!important` flags, fonts and other stuff in that file. Uncomment a few lines and you have a somewhat working dark mode.
