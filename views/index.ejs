@@ -12,25 +12,32 @@
         <nav class="navbar">
             <div class="container-fluid">
                 <div class="navbar-brand">Open Source Minecraft Panel</div>
+                <div class="navbar-item">
+                    <a href="/logout" class="navbar-link">Log Out</a>
+                </div>
             </div>
+            
         </nav>
     </header>
-    <br><br><br><br><br><br>
+    <br><br><br><br>
     <div class="container">
-        <table class="table">
-            <thead class="fw-bold">
-                <td>Server Name</td>
-                <td>Version</td>
-            </thead>
-            <tbody>
-                <% for ( let server of servers ) { %>
-                <tr>
-                    <td><a href="/servers/<%= server.identifier.split("-")[0] %>"><%= server.name %></a></td>
-                    <td><%= server.container.environment["MINECRAFT_VERSION"] || "N/A" %></td>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
+        <h3>Hello, <%= req.user.info.firstName %>!</h3>
+        <h1>Your Servers</h1>
+        
+        <br><br>
+        <% if (servers.length === 0) { %> <h6>Your hosting provider didn't assign any servers under your account. Check in with them for more information.</h6> <% } %>
+        <% for ( let server of servers ) { %>
+        <div class="card">
+            <div class="card-header">
+                <span><%= server.name %></span>
+            </div>
+            <div class="card-body">
+                <a href="/servers/<%= server.identifier.split('-')[0] %>" class="btn btn-primary">Manage <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        <br>
+        <% } %>
+        <br><br>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"></script>

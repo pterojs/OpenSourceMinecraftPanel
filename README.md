@@ -18,6 +18,7 @@ To update, run `git pull`.
 OSMP is somewhat lightweight, but it's advised that you have at least:
 * 1024 MB (or 1 GB) of RAM
 * 2 Cores
+* A working MongoDB Cluster [Required]
 
 To run OSMP, execute `node .`, `npm test`, or if you use PM2 (recommended) - `pm2 start webserver.js --name OSMP`.
 
@@ -26,3 +27,4 @@ To run OSMP, execute `node .`, `npm test`, or if you use PM2 (recommended) - `pm
 
 ### Some Fun Facts.
 * OSMP runs on EJS & Materalized Bootstrap v5. `/public/css/global.css` allows for the user to edit CSS and let it be applied everywhere. You can add your own `!important` flags, fonts and other stuff in that file. Uncomment a few lines and you have a somewhat working dark mode.
+* OSMP uses AnsiUp to convert ANSI to HTML.

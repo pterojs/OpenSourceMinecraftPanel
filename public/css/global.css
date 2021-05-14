@@ -21,3 +21,8 @@ table > * {
     border: none;
     outline: none;
 } */
+
+tr.file > td > i.fas {
+    margin-right: 10px;
+    color: gray;
+}

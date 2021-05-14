@@ -7,7 +7,9 @@ const pterodactyl   = require("pterodactyl.js");
 const passport      = require("passport");
 const { Strategy }  = require("passport-local");
 const session       = require("express-session");
-const bp            = require("body-parser");
+
+const MongoStore    = require("connect-mongo");
+
 
 // =====================
 // Configure Pterodactyl
@@ -20,10 +22,13 @@ const client = new pterodactyl.Builder(process.env.PTERO_URL, process.env.API_KE
 // =====================
 passport.use(new Strategy({usernameField: "username", passwordField: "password"},(username, _, done) => {
     process.nextTick(async function() {
-        const u = {}
+        const u = {};
         u.sys = new pterodactyl.Builder(process.env.PTERO_URL, username)
             .asUser();
         u.key = username;
+
+        let userinfo = await u.sys.call("/client/account", "GET");
+        u.info = await client.getUser(userinfo.data.attributes.id)
     
         try {
             await u.sys.testConnection();
@@ -40,8 +45,7 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(id, cb) {
-
-    cb(null, id)
+    cb(null, id);
 });
 
 
@@ -50,26 +54,32 @@ passport.deserializeUser(function(id, cb) {
 // Configure Express WS
 // =====================
 
-app.use(session({ secret: "cookies", saveUninitialized: false, resave: false }));
+app.use(session({ secret: "cookies", store: MongoStore.create({ mongoUrl: process.env.SESSION_DB_URL, dbName: "OMSP_SESSIONS" }), resave: false, saveUninitialized: false }));
 app.set("view engine", "ejs");
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(bp.urlencoded({ extended: true }));
-app.use(bp.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static("./public"));
 
 // =====================
 // Inital Routes
 // =====================
 
-app.get("/", async function(req, res, next) {
+app.get("/", async function(req, res) {
+    
     if (!req.isAuthenticated()) return res.render("login", { req, url: process.env.PTERO_URL });
-    res.redirect("/dashboard")
+    res.redirect("/dashboard");
+
 });
 
-app.post("/login", passport.authenticate('local', { failWithError: true }), function(req, res) {
-
+app.post("/login", passport.authenticate("local", { failWithError: true }), function(req, res) {
     res.redirect("/dashboard");
+});
+
+app.get("/logout", function(req, res) {
+    req.session.destroy();
+    res.redirect("/");
 });
 
 
@@ -82,21 +92,25 @@ app.get("/dashboard", async function(req, res) {
     
     const endList = [];
     for (let server of servers) {
-        server = { ...server, ...(await client.getServers()).find(s => s.identifier === server.identifier)};
-        // const egg = await client.getEgg(server.nest, server.egg);
-        // server.egg = egg;
-        // server.nest = await client.getNest(egg.nest);
-        endList.push(server);
+        let srv = (await client.getServers()).find(s => s.identifier === server.identifier);
+        const egg = await client.getEgg(srv.nest, srv.egg);
+        srv.egg = egg;
+        srv.nest = await client.getNest(egg.nest);
+        
+        endList.push({ ...server, ...srv });
     }
-    
-    res.render("index", { servers: endList });
 
-})
+    res.render("index", { servers: endList.filter(s => s.nest.name === "Minecraft"), req });
+
+});
 
 // =====================
 // External Routes
 // =====================
-app.use("/servers", require("./routes/server")(client))
+app.use("/servers", require("./routes/server")(client));
 
 
-app.listen(3000);
+const listener = app.listen(process.env.PORT || 3000, () => {
+    console.info(`OSMP is ready and now listening on port ${listener.address().port}.`);
+    console.info(`Web URL: http://${require("os").hostname()}:${listener.address().port}/`)
+});

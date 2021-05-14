@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMP</title>
+    <%- include('./extensions/head') %>
+</head>
+<body style="background-color: black; color: white;">
+    <div class="container-fluid my-2 mb-5">
+        <p id="connecting">Connecting to WebSocket...</p>
+        <div id="messages" style="max-height: 80%;"></div>
+
+    </div>
+    <footer>
+        <div class="container-fluid fixed-bottom mb-2">
+            <form id="form">
+                <input id="cmd" type="text" placeholder="Send a command." class="form-control">
+            </form>
+            
+        </div>
+    </footer>
+
+    <script src="/js/ansi_up.js"></script>
+    <script async>
+        let ansi_up = new AnsiUp;
+
+        function appendMessage(html) {
+            let element = document.createElement("span");
+            element.innerHTML = html;
+
+            document.getElementById("messages").appendChild(element);
+            document.getElementById("messages").innerHTML += "<br>";
+            return;
+        }
+        const ws = new WebSocket("<%= socket %>");
+        
+        ws.onerror = function(e) {
+            document.getElementById("connecting").innerText = `Failed to connect to console. Check your browsers Developer Tools by pressing Ctrl + Shift + I then clicking on the Console tab.`
+        }
+
+        ws.onopen = function(e) {
+            ws.send(JSON.stringify({ "event": "auth", "args": ["<%= token %>"]}));
+            document.getElementById("connecting").hidden = true
+
+            appendMessage("<span style='color:green'>Connected!</span>");
+        }
+
+        ws.onmessage = function(e) {
+            if (e.data.startsWith("{")) {
+                let parsed = JSON.parse(e.data);
+
+                if (parsed.event === "status") {
+                    appendMessage(`Status: ${parsed.args[0]}`);
+                } else if (parsed.event === "console output") {
+                    appendMessage(ansi_up.ansi_to_html(parsed.args[0]));
+                }
+            }
+
+            if (window.scrollY >= document.getElementById("messages").scrollHeight - 300) window.scroll(0, document.getElementById("messages").scrollHeight)
+
+        }
+
+        document.getElementById("form").onsubmit = function(e) {
+            e.preventDefault();
+            let cmd_field = document.getElementById("cmd");
+            ws.send(JSON.stringify({ event: "send command", args: [cmd_field.value] }));
+            cmd_field.value = "";
+        }
+    </script>
+</body>
+</html>

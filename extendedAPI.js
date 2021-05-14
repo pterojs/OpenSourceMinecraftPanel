@@ -7,10 +7,10 @@ module.exports = {
                 }
             }, (err, _res, body) => {
                 if (err) return rej(err);
-
+                if (body.startsWith("<html>")) return res({ data: [] });
                 return res(JSON.parse(body));
             });
-        })
+        });
     },
     getFileContent(server, directory, key) {
         return new Promise((res, rej) => {
@@ -23,7 +23,7 @@ module.exports = {
 
                 return res(body);
             });
-        })
+        });
     },
     saveFileContent(server, directory, key, body) {
         return new Promise((res, rej) => {
@@ -33,13 +33,13 @@ module.exports = {
                 },
                 body,
                 headers: {
-                    'Content-Type': 'text/plain'
+                    "Content-Type": "text/plain"
                 }
             }, (err, _res, body) => {
                 if (err) return rej(err);
 
                 return res(body);
             });
-        })
+        });
     }
-}
+};

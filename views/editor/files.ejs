@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMP</title>
+    <%- include('../extensions/head') %>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div class="navbar-brand">Open Source Minecraft Panel - <%= server.name %></div>
+            </div>
+        </nav>
+    </header>
+    <br><br><br><br><br><br>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>File Editor</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead class="fw-bold">
+                        <td>Name</td>
+                        <td>Type</td>
+                    </thead>
+                    <tbody>
+                        <% for (let file of files) { %>
+                        <tr class="file">
+                            <% if (!file.is_file) { %>
+                                <td><i class='fas fa-folder'></i> <a href="?path=<%= curPath + '/' + file.name%>"><%= file.name %></a></td>
+                            <% } else { %>
+                                <td><i class='fas fa-file'></i> <a href="edit/?file=<%=curPath + '/' +file.name%>"><%= file.name %></a></td>
+                            <% } %>
+                            
+                            <td><%= file.mimetype %> (<%= file.is_file ? "File" : "Folder" %>)</td>
+                        </tr>
+                        <% } %>                
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <button onclick="window.history.back()" class="btn btn-danger">Back</button>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br><br><br><br>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"></script>
+</body>
+</html>

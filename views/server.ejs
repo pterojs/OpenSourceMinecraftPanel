@@ -35,6 +35,9 @@
                         <hr>
                         <h5>Players</h5>
                         <p><%= server.extra.players.online %>/<%= server.extra.players.max %></p>
+                        <hr>
+                        <h5>Mods</h5>
+                        <%- mods.map(m => `<kbd>${m.split(".").reverse().slice(1).join(".").replace("(1)", "")}</kbd>`).join('\n') || "No Mods/Plugins were found." %>
                     </div>
                 </div>
             </div>
@@ -57,12 +60,11 @@
                         <h4>Server Options</h4>
                     </div>
                     <div class="card-body">
-                        <h5>Edit Files</h5>
-                        <p><a href="properties/">Edit <kbd>server.properties</kbd></a></p>
+                        <p><a href="console/" target="_blank" class="btn btn-secondary">View Console <i class="fas fa-terminal"></i></a> <a href="properties/" class="btn btn-primary">Change Server Properties <i class="fas fa-wrench"></i></a></p>
                         <hr>
                         <h5>Power Options</h5>
-                        <p><a href="#" class="btn btn-secondary">View Console</a> <a href="start/" class="btn btn-primary">Start Server</a> <a href="#" class="btn btn-warning">Stop Server</a></p>
-                        <% console.log(isEulaAgreedTo); if(isEulaAgreedTo === "false") { %>
+                        <p><a href="start/" class="btn btn-primary">Start Server</a> <a href="#" class="btn btn-warning">Stop Server</a></p>
+                        <%if(isEulaAgreedTo === "false") { %>
                             <hr>
                             <h5><strong>Agree to EULA</strong></h5>
                             <p><strong>In order to run a server, you have to agree to Mojang's EULA.</strong><br>Click <a href="agreeEula/">here</a> to agree to it after you read their EULA.</p>
@@ -72,7 +74,7 @@
             </div>
         </div>
     </div>
-
+    <br><br><br><br><br><br><br><br>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.js"></script>
 </body>
 </html>
