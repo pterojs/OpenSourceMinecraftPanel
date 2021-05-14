@@ -33,8 +33,7 @@ module.exports = function(client) {
         }
 
         
-        let eula = await getFileContent(server.identifier.split("-")[0], "/eula.txt", req.user.key);
-        let isEulaAgreedTo = eula.split("\n")[1].split("=")[1];
+ 
 
         let mods = [];
         let ModsFolder = await getFiles(server.identifier.split("-")[0], "/plugins", req.user.key);
@@ -65,7 +64,7 @@ module.exports = function(client) {
                     players: { online: 0, max: 0 }
                 };
             }
-            return res.render("server", { server: {...s,...server}, isEulaAgreedTo, mods });
+            return res.render("server", { server: {...s,...server}, mods });
         });
         
         
@@ -110,21 +109,7 @@ module.exports = function(client) {
         
     });
 
-    app.get("/:server_id/agreeEula", async function(req, res) {
-        if(!req.user) return res.redirect("/");
-
-        const user = new pterodactyl.Builder(process.env.PTERO_URL, req.user.key)
-            .asUser();
-
-        const s = await user.getClientServer(req.params.server_id);
-
-        if (!s) return res.status(404).send("Server not found.");
-
-        await saveFileContent(s.identifier.split("-")[0], "/eula.txt", req.user.key, "\neula=true");
-        return res.redirect("back");
-        
-        
-    });
+    
 
     app.get("/:server_id/files", async function(req, res) {
         if(!req.user) return res.redirect("/");
