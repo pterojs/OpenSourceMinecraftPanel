@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>OSMP</title>
     <%- include('./extensions/head') %>
 </head>
+
 <body style="background-color: black; color: white;">
     <div class="container-fluid my-2 mb-5">
         <p id="connecting">Connecting to WebSocket...</p>
@@ -18,7 +20,7 @@
             <form id="form">
                 <input id="cmd" type="text" placeholder="Send a command." class="form-control">
             </form>
-            
+
         </div>
     </footer>
 
@@ -35,19 +37,19 @@
             return;
         }
         const ws = new WebSocket("<%= socket %>");
-        
-        ws.onerror = function(e) {
+
+        ws.onerror = function (e) {
             document.getElementById("connecting").innerText = `Failed to connect to console. Check your browsers Developer Tools by pressing Ctrl + Shift + I then clicking on the Console tab.`
         }
 
-        ws.onopen = function(e) {
-            ws.send(JSON.stringify({ "event": "auth", "args": ["<%= token %>"]}));
+        ws.onopen = function (e) {
+            ws.send(JSON.stringify({ "event": "auth", "args": ["<%= token %>"] }));
             document.getElementById("connecting").hidden = true
 
             appendMessage("<span style='color:green'>Connected!</span>");
         }
 
-        ws.onmessage = function(e) {
+        ws.onmessage = function (e) {
             if (e.data.startsWith("{")) {
                 let parsed = JSON.parse(e.data);
 
@@ -62,7 +64,7 @@
 
         }
 
-        document.getElementById("form").onsubmit = function(e) {
+        document.getElementById("form").onsubmit = function (e) {
             e.preventDefault();
             let cmd_field = document.getElementById("cmd");
             ws.send(JSON.stringify({ event: "send command", args: [cmd_field.value] }));
@@ -70,4 +72,5 @@
         }
     </script>
 </body>
+
 </html>
